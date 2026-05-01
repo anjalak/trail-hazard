@@ -32,6 +32,10 @@ dist/
 build/
 *.egg
 
+# --- Celery (local beat scheduler state; do not commit) ---
+backend/celerybeat-schedule
+backend/celerybeat-schedule.*
+
 # --- Node / Next.js (frontend) ---
 frontend/node_modules/
 frontend/.next/
