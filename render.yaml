@@ -1,0 +1,66 @@
+# Render Blueprint: TrailIntel API + Celery (worker + beat).
+# Apply from the Render Dashboard (New > Blueprint) after connecting this GitHub repo.
+#
+# Before first deploy, set secret env vars in the dashboard (or when prompted):
+#   DATABASE_URL, REDIS_URL, CORS_ALLOW_ORIGINS
+#
+# Use a managed Postgres with PostGIS (e.g. Neon) and Redis (e.g. Upstash or Render Redis).
+# Web service runs `alembic upgrade head` before each deploy (preDeployCommand).
+
+services:
+  - type: web
+    name: trailintel-api
+    runtime: docker
+    region: oregon
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    preDeployCommand: alembic upgrade head
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: CORS_ALLOW_ORIGINS
+        sync: false
+      - key: USE_IN_MEMORY_REPOSITORY
+        value: "false"
+
+  - type: worker
+    name: trailintel-celery-worker
+    runtime: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: celery -A app.jobs.tasks:celery_app worker --loglevel=info
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: USE_IN_MEMORY_REPOSITORY
+        value: "false"
+
+  - type: worker
+    name: trailintel-celery-beat
+    runtime: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: celery -A app.jobs.tasks:celery_app beat --loglevel=info
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: USE_IN_MEMORY_REPOSITORY
+        value: "false"
