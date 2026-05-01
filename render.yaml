@@ -5,7 +5,7 @@
 #   DATABASE_URL, REDIS_URL, CORS_ALLOW_ORIGINS
 #
 # Use a managed Postgres with PostGIS (e.g. Neon) and Redis (e.g. Upstash or Render Redis).
-# Web service runs `alembic upgrade head` before each deploy (preDeployCommand).
+# Free-tier web plans cannot use preDeployCommand; migrations run at container startup (see backend/Dockerfile).
 
 services:
   - type: web
@@ -16,7 +16,6 @@ services:
     branch: main
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    preDeployCommand: alembic upgrade head
     healthCheckPath: /health
     autoDeployTrigger: commit
     envVars:

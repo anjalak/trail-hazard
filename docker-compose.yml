@@ -36,7 +36,7 @@ services:
   worker:
     image: python:3.11-slim
     working_dir: /app
-    command: sh -c "pip install -r requirements.txt && celery -A app.jobs.tasks.celery_app worker --loglevel=info"
+    command: sh -c "pip install -r requirements.txt && celery -A app.jobs.tasks:celery_app worker --loglevel=info"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/trailintel
       REDIS_URL: redis://redis:6379/0
@@ -50,7 +50,7 @@ services:
   beat:
     image: python:3.11-slim
     working_dir: /app
-    command: sh -c "pip install -r requirements.txt && celery -A app.jobs.tasks.celery_app beat --loglevel=info"
+    command: sh -c "pip install -r requirements.txt && celery -A app.jobs.tasks:celery_app beat --loglevel=info"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/trailintel
       REDIS_URL: redis://redis:6379/0

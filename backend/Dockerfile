@@ -12,10 +12,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY alembic ./alembic
 COPY alembic.ini .
+COPY data ./data
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Migrations here (not preDeployCommand) keep Render free-tier web services valid.
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000"]

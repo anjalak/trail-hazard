@@ -2,6 +2,10 @@
 
 All notable project updates are tracked here for handoff and portfolio context.
 
+## 2026-05-01
+
+- Added production hosting runbook [`docs/hosting.md`](docs/hosting.md), Render Blueprint [`render.yaml`](render.yaml) (API + Celery worker/beat; API image runs Alembic at container startup for free-tier compatibility), and [`frontend/vercel.json`](frontend/vercel.json). Production Docker image now includes `backend/data` for ingestion paths.
+
 ## 2026-04-28
 
 - Explore page map now supports manual location entry by ZIP code or city as a fallback to browser geolocation; the app geocodes the input and reloads nearby trails from that center.
