@@ -115,11 +115,25 @@ def _park_county(park_code: str) -> str:
     }.get(park_code.upper(), "Unknown")
 
 
+def _canonical_park_name(park_code: str) -> str:
+    """Stable QUAD columns for UNIQUE (state_code, city, park_name, park_type); NPS UNITNAME varies by feature."""
+    return {
+        "MORA": "Mount Rainier National Park",
+        "OLYM": "Olympic National Park",
+        "NOCA": "North Cascades National Park",
+    }.get(park_code.upper(), "Unknown National Park")
+
+
+def _location_id_for_park(park_code: str) -> int:
+    """One canonical trail_locations row per park (matches UNIQUE on location quad)."""
+    return {"MORA": 1, "OLYM": 2, "NOCA": 3}.get(park_code.upper(), 1)
+
+
 def fetch_trails(park_codes: list[str], max_per_park: int) -> list[TrailRecord]:
     trails: list[TrailRecord] = []
     trail_id = 1
-    location_id = 1
     for park_code in park_codes:
+        location_id = _location_id_for_park(park_code)
         payload = _fetch_json(_trails_url(park_code))
         for feature in payload.get("features", [])[:max_per_park]:
             props = feature.get("properties") or {}
@@ -138,7 +152,7 @@ def fetch_trails(park_codes: list[str], max_per_park: int) -> list[TrailRecord]:
                     location_id=location_id,
                     state_code="WA",
                     city=_park_city(park_code),
-                    park_name=unit_name,
+                    park_name=_canonical_park_name(park_code),
                     park_type="national_park",
                     county=_park_county(park_code),
                     difficulty="moderate",
@@ -156,7 +170,6 @@ def fetch_trails(park_codes: list[str], max_per_park: int) -> list[TrailRecord]:
                 )
             )
             trail_id += 1
-            location_id += 1
     return trails
 
 
@@ -393,6 +406,10 @@ def build_fallback_snapshot(
 
 
 def build_seed_sql(trails: list[TrailRecord]) -> str:
+    locations_by_id: dict[int, TrailRecord] = {}
+    for t in trails:
+        locations_by_id.setdefault(t.location_id, t)
+    location_rows = sorted(locations_by_id.values(), key=lambda x: x.location_id)
     location_values = ",\n".join(
         "("
         + ", ".join(
@@ -406,7 +423,7 @@ def build_seed_sql(trails: list[TrailRecord]) -> str:
             ]
         )
         + ")"
-        for t in trails
+        for t in location_rows
     )
     trail_values = ",\n".join(
         "("
