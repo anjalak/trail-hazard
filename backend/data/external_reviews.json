@@ -1,0 +1,200 @@
+[
+  {
+    "trail_id": 1,
+    "source_platform": "nps_alerts",
+    "external_review_id": "D007E0F8-EF05-452E-9A06-CDA6C8ED33ED",
+    "source_url": "https://www.nps.gov/mora/planyourvisit/winter-travel.htm",
+    "rating": null,
+    "text": "Regular nightly closures of the Longmire gate have ended for the season.. The gate at Longmire to Paradise may still close for the night to support public safety depending on conditions. All vehicles, including 4WD and AWD, must carry tire chains and be ready to use them until May 1.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-17 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 1,
+    "source_platform": "nps_alerts",
+    "external_review_id": "EAB6278E-32F7-4DF0-B6D2-C3EFAAB3B897",
+    "source_url": "https://www.nps.gov/mora/planyourvisit/park-construction.htm",
+    "rating": null,
+    "text": "Ohanapecosh Campground area closed for construction in 2026.. The entire Ohanapecosh Campground area is CLOSED for the duration of the construction project, including all campsites, visitor center, restrooms, picnic area, & Ohanapecosh river access.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-08 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 1,
+    "source_platform": "nps_alerts",
+    "external_review_id": "EA161A21-F34D-4A7F-BF1B-913E1739F81C",
+    "source_url": "https://www.nps.gov/mora/planyourvisit/winter-safety.htm",
+    "rating": null,
+    "text": "Limited access to some trails due to washouts from winter storms.. The following trails have been impacted by winter storms: Carter Falls Trail footbridge over the Nisqually River has been dislodged and there is no safe water crossing; Kautz Creek Trail is impassable one mile from the trailhead due to a washout. There may be other trails with unreported storm impacts around the park.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2025-12-30 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 1,
+    "source_platform": "nps_alerts",
+    "external_review_id": "E5F3836C-7B40-4550-9650-4F50BF4CE491",
+    "source_url": "https://www.nps.gov/mora/planyourvisit/carbon-river-and-mowich.htm",
+    "rating": null,
+    "text": "SR 165 Carbon River/Fairfax Bridge is closed: no access to Carbon River or Mowich Lake.. There is NO public access to Carbon River & Mowich Lake from SR 165. The bridge is closed to pedestrians, bicycles and vehicles and there is no alternate route.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2025-12-04 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 1,
+    "source_platform": "nps_alerts",
+    "external_review_id": "6E34CD95-476A-4DAB-9377-3DE4542F53A4",
+    "source_url": "https://www.nps.gov/mora/planyourvisit/road-status.htm",
+    "rating": null,
+    "text": "Winter Season Closures. The following regular winter season road closures are in place: Westside Road, Paradise Valley Road, Stevens Canyon Road, White River Road, Sunrise Road, State Routes 410/Chinook Pass (between Crystal Mountain Blvd. & Morse Creek) and 123/Cayuse Pass (at the park boundary).",
+    "sentiment_score": 0.0,
+    "scraped_at": "2025-11-17 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 26,
+    "source_platform": "nps_alerts",
+    "external_review_id": "A4FB72ED-081E-4851-BD4A-11E83603C083",
+    "source_url": "https://developer.nps.gov/",
+    "rating": null,
+    "text": "Hurricane Ridge Road Status. Hurricane Ridge Road is open. During the period of March 31 through April 30, Hurricane Ridge Road may open or close depending on road conditions, and weather. Check back here or call 360-565-3131 for updates.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-25 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 26,
+    "source_platform": "nps_alerts",
+    "external_review_id": "BF786513-04CA-4234-8A9F-A3581363D747",
+    "source_url": "https://developer.nps.gov/",
+    "rating": null,
+    "text": "Graves Creek Road Closed Until Repairs Complete. Graves Creek Road will reopen to vehicles after park road crews repair an eroded section at mile 4.1. Updates, including a construction timeline, will be posted as soon as they are known. To ensure equipment can move to and from the work site, vehicles may not park along the road during construction.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-22 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 26,
+    "source_platform": "nps_alerts",
+    "external_review_id": "4D18B12B-E625-4D7C-825A-C779A6EACCA5",
+    "source_url": "https://jeffersoncountypublichealth.org/CivicAlerts.aspx?AID=1478&ARC=3292",
+    "rating": null,
+    "text": "South Shore Quinault Road Washed Out Beyond Park Boundary. South Shore Road \u2013 which is maintained by Jefferson County \u2013 is closed due to a major wash-out. For more information, visit the Jefferson County website.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-02-06 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 26,
+    "source_platform": "nps_alerts",
+    "external_review_id": "0918CC30-347E-47CA-98FC-9AB7602DE1B3",
+    "source_url": "https://inciweb.wildfire.gov/incident-information/waolf-bear-gulch-fire",
+    "rating": null,
+    "text": "Staircase, Adjacent Wilderness Areas Closed due to Bear Gulch Fire Impacts. For a full list of closed trails and campsites, visit our Fire Conditions and Updates page. For archived fire content, including news releases and maps, visit the Bear Gulch Fire InciWeb page.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-02-06 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "5F62DE19-B95F-4A5C-90D5-F1E71ABD2D89",
+    "source_url": "https://developer.nps.gov/",
+    "rating": null,
+    "text": "Temporary Closures for Peregrine Nesting. The following established climbing management areas are closed to all public use from March 1, 2026 to July 15, 2026 to protect peregrine falcon nesting aeries: Newhalem Crag East and Newhalem Crag West (Ryan\u2019s Wall).",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-27 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "9D047BC4-DC86-4A9D-AF1E-8299D40C6A71",
+    "source_url": "https://www.nps.gov/noca/planyourvisit/road-conditions.htm",
+    "rating": null,
+    "text": "Cascade River Road Current Closure. Cascade River Road is closed to vehicles at milepost 20 (Eldorado) two miles before the trailhead. Foot and bicycle traffic is permitted beyond the gate. Do not block gate.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-14 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "92CE4554-B891-4CBF-84DB-202602F378AE",
+    "source_url": "https://wsdot.com/travel/real-time/map/",
+    "rating": null,
+    "text": "State Route 20 Closed MP130. State Route 20 is closed at milepost 130 (Colonial Creek Campground) in both lanes. Diablo Lake Overlook is not accessible beyond the closure. For more information click the link to the WSDOT real time map.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-04-14 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "AA1919BE-5AE0-4F1A-9C2C-BBB7A41294A5",
+    "source_url": "https://www.nps.gov/noca/learn/news/north-cascades-national-park-to-support-emergency-reconstruction-after-historic-flood.htm",
+    "rating": null,
+    "text": "Flooding and Landslides Affecting Park Complex. The park complex experienced severe weather events following flood damage in December 2025, causing unsafe conditions and limiting basic infrastructure in some areas. Some services are available in Stehekin with winter and spring operations.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2026-03-05 00:00:00.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "7DC99B5A-EDA3-47B7-988E-A1750AFF7B84",
+    "source_url": "https://www.nps.gov/noca/planyourvisit/post-fire-safety.htm",
+    "rating": null,
+    "text": "Stehekin Flash Flood and Debris Flow Area. The Stehekin area is prone to flooding, which increases in a post-fire environment. Know before you go \u2013 visit the Post Fire Safety page for information on what to do in a flash flood and debris flow area",
+    "sentiment_score": 0.0,
+    "scraped_at": "2025-05-16 15:48:28.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "13FEA700-4EB0-4649-B46E-090902C3C2F9",
+    "source_url": "https://www.nps.gov/noca/planyourvisit/hozomeen.htm",
+    "rating": null,
+    "text": "Hozomeen Gate Remains Closed. Until further notice, the gate at Hozomeen will remain closed; vehicle and foot traffic across the US/Canada border is prohibited. Visitors must enter through a designated port of entry.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2025-02-13 10:43:22.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "8480542B-A0D2-4ADC-8CFC-B3949B040A8F",
+    "source_url": "https://www.nps.gov/noca/planyourvisit/fire-closures.htm",
+    "rating": null,
+    "text": "Fire Closures - Trail, Area, and Camp Closures. For closures due to fire activity visit the Fire Closures page, including trail, area, and camp closures for current and post fire conditions.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2023-07-29 14:17:58.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "6D5C9E19-8DF6-4224-9409-1F6A79A10C9E",
+    "source_url": "https://www.nps.gov/noca/planyourvisit/lake-and-river-conditions.htm",
+    "rating": null,
+    "text": "Diablo Lake Boat Launch Inaccessible to Powerboats. Due to silt accumulation, the Diablo Lake boat launch at Colonial Creek South Campground is not usable for launching most powerboats. Expect shallow or no water at the launch ramp and the possibility of needing to carry your boat to or from the water.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2023-03-30 18:30:13.0",
+    "author_handle": "nps_alert_feed"
+  },
+  {
+    "trail_id": 51,
+    "source_platform": "nps_alerts",
+    "external_review_id": "FA92ED3E-3FA3-41C9-A166-5064DDA98044",
+    "source_url": "https://developer.nps.gov/",
+    "rating": null,
+    "text": "Be Aware of Break-ins along State Route 20. Prevent smashed windows and theft. Break-ins are not uncommon at trailheads along State Route 20. Remove your valuables and electronics and take associated electronic cords.",
+    "sentiment_score": 0.0,
+    "scraped_at": "2015-05-21 11:19:27.0",
+    "author_handle": "nps_alert_feed"
+  }
+]

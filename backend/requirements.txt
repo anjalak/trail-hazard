@@ -1,0 +1,11 @@
+# Python 3.11+ required (PEP 604 typing, etc.); see repository root .python-version
+fastapi
+uvicorn[standard]
+strawberry-graphql[fastapi]
+pydantic
+celery
+redis
+pytest
+psycopg[binary]
+alembic
+httpx

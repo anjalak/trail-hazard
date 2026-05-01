@@ -1,0 +1,47 @@
+# Continuous delivery triggers (optional).
+#
+# 1. Platform-native (simplest): connect GitHub to Vercel (`frontend/` root) and Render or Railway (`backend/` Dockerfile).
+#    Every merge to main redeploys automatically — no hooks required.
+#
+# 2. This workflow: after the `CI` workflow succeeds on main/master, pings deploy hooks when secrets are set.
+#    Add BACKEND_DEPLOY_HOOK_URL / FRONTEND_DEPLOY_HOOK_URL from your platform’s Deploy Hook settings.
+#
+# Hooks are skipped when the corresponding secret is unset.
+name: Deploy (optional hooks)
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-trailintel
+  cancel-in-progress: true
+
+jobs:
+  deploy-hooks:
+    name: Ping deploy hooks
+    runs-on: ubuntu-latest
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch'
+      || (github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.head_repository.owner.login == github.repository_owner) }}
+    steps:
+      - name: Backend — deploy hook
+        env:
+          HOOK_URL: ${{ secrets.BACKEND_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then echo "BACKEND_DEPLOY_HOOK_URL unset; skipping backend hook."; exit 0; fi
+          curl -fsS -X POST "$HOOK_URL"
+
+      - name: Frontend — deploy hook
+        env:
+          HOOK_URL: ${{ secrets.FRONTEND_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then echo "FRONTEND_DEPLOY_HOOK_URL unset; skipping frontend hook."; exit 0; fi
+          curl -fsS -X POST "$HOOK_URL"

@@ -1,0 +1,56 @@
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-bg: #5d4f43;
+  --app-text: #142224;
+  --surface: #9eb6b0;
+  --surface-muted: #8da6a0;
+  --border-subtle: #6f8b84;
+  --focus-ring: #b6ea42;
+  --signal: #d9423a;
+}
+
+html {
+  min-height: 100%;
+  -webkit-tap-highlight-color: rgba(15, 23, 42, 0.08);
+  background-color: var(--app-bg);
+}
+
+/* Transparent so repeating topo on <html> stays visible (opaque bg-* on body hides it). */
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: transparent;
+  color: var(--app-text);
+  font-family: Inter, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
