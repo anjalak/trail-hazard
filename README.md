@@ -245,6 +245,6 @@ Variables:
 - Database: managed Postgres with PostGIS
 - Redis: managed Redis provider
 
-## Interview Highlight
+## Highlight
 
 The project demonstrates geospatial queries, ETL design, algorithmic hazard scoring, background job orchestration, and end-to-end ownership from UI to deployment.
