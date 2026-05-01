@@ -9,6 +9,13 @@ type TrailFilters = {
 
 const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_URL ?? "http://localhost:8000/graphql";
 
+function _fetchHint(): string {
+  if (typeof window !== "undefined" && window.location.origin.startsWith("https://")) {
+    return ` From a browser this often means CORS: set FastAPI env CORS_ALLOW_ORIGINS=${window.location.origin}, (comma-separated for multiple previews).`;
+  }
+  return "";
+}
+
 async function executeGraphQL<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
   let response: Response;
   try {
@@ -18,8 +25,10 @@ async function executeGraphQL<T>(query: string, variables?: Record<string, unkno
       body: JSON.stringify({ query, variables }),
       cache: "no-store"
     });
-  } catch (error) {
-    throw new Error(`Failed to reach GraphQL endpoint at ${endpoint}. Start backend on this URL or update NEXT_PUBLIC_GRAPHQL_URL.`);
+  } catch {
+    throw new Error(
+      `Failed to reach GraphQL endpoint at ${endpoint}. Update NEXT_PUBLIC_GRAPHQL_URL (Vercel: Environment → Production Preview).${_fetchHint()}`
+    );
   }
 
   if (!response.ok) {

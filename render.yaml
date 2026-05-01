@@ -7,7 +7,19 @@
 # Before first deploy, set secret env vars when prompted:
 #   DATABASE_URL, REDIS_URL, CORS_ALLOW_ORIGINS
 #
-# Use managed Postgres with PostGIS (e.g. Neon) and Redis (e.g. Upstash).
+# Vercel frontends call the API from the browser: CORS_ALLOW_ORIGINS must list every Next.js
+# origin (comma-separated), e.g.
+#   https://your-project.vercel.app,https://your-project-git-main-yourteam.vercel.app
+# Omit trailing slashes; use https. Without this, search (client fetch) fails in production.
+#
+# Use managed Postgres with PostGIS and Redis (e.g. Upstash).
+#
+# Supabase on Render: use the pooler host (*.pooler.supabase.com). Do NOT use the direct URI
+# whose host is db.<project-ref>.supabase.co — it resolves to IPv6 and Alembic will fail with
+# "connection ... failed: Network is unreachable" on Render (IPv4-only egress).
+# Dashboard → Connect → "Session pooler" or "Transaction pooler" URI.
+# Doc: https://supabase.com/docs/guides/troubleshooting/supabase--your-network-ipv4-and-ipv6-compatibility
+#
 # Scheduled ingestion (Celery beat) will not run until you deploy workers elsewhere.
 
 services:

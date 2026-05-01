@@ -240,8 +240,8 @@ Variables:
 
 ## Deployment Targets
 
-- Frontend: Vercel
-- Backend + workers: Render or Railway
+- Frontend: Vercel — set **`NEXT_PUBLIC_GRAPHQL_URL`** to **`https://<your-render-service>.onrender.com/graphql`** (Production + Preview if you want preview deploys against the API).
+- Backend + workers: Render or Railway — set **`CORS_ALLOW_ORIGINS`** to your live Vercel origin(s), e.g. **`https://your-app.vercel.app`** (comma-separated for preview URLs). Traffic from the search bar runs in the browser; without matching CORS, `fetch` fails even if the API is up.
 - Database: managed Postgres with PostGIS
 - Redis: managed Redis provider
 
