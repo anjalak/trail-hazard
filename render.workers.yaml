@@ -1,0 +1,43 @@
+# Optional Blueprint — Celery worker + beat (paid only; no free tier on Render).
+#
+# Create a separate Blueprint in the Render dashboard and point it at this file when
+# you want background jobs, or merge these `services` entries into another blueprint.
+#
+# Expect ~2 × Starter billing for the two workers (see https://render.com/pricing ).
+
+services:
+  - type: worker
+    name: trailintel-celery-worker
+    runtime: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: celery -A app.jobs.tasks:celery_app worker --loglevel=info
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: USE_IN_MEMORY_REPOSITORY
+        value: "false"
+
+  - type: worker
+    name: trailintel-celery-beat
+    runtime: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: celery -A app.jobs.tasks:celery_app beat --loglevel=info
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: USE_IN_MEMORY_REPOSITORY
+        value: "false"
