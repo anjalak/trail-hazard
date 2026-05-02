@@ -104,7 +104,9 @@ def test_nearby_medium_radius_includes_additional_mount_rainier_trails(pg_repo: 
     assert pivot is not None
     rows = pg_repo.nearby_trails(pivot["lat"], pivot["lng"], 35.0, state_code="WA")
     ids = {r["id"] for r in rows}
-    assert ids.issuperset({1, 2})
+    # nearby_trails dedupes same name + region + state to one row (nearest geometry); multiple
+    # NPS "Wonderland" segments mean id 2 is not necessarily the retained row—use a uniquely named trail.
+    assert ids.issuperset({1, 4})
     assert all(r["location"]["park_name"] == "Mount Rainier National Park" for r in rows)
 
 
