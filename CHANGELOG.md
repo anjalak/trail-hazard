@@ -2,6 +2,10 @@
 
 All notable project updates are tracked here for handoff and portfolio context.
 
+## 2026-05-02
+
+- Reworked [`README.md`](README.md) for a portfolio-facing overview without links to unpublished `docs/`; inlined quick start, local URLs, and deployment env hints. Long GraphQL examples remain in `docs/graphql-api-reference.md` for local handoff. Added gitignored `README.private.md` for local-only notes.
+
 ## 2026-05-01
 
 - Added [`docs/data-refresh-and-deploy.md`](docs/data-refresh-and-deploy.md): rebuild from NPS, `bootstrap_db`, `run_ingestion_once`, git push, and production verification; linked from README and [`docs/hosting.md`](docs/hosting.md) §7.6.
@@ -29,3 +33,10 @@ All notable project updates are tracked here for handoff and portfolio context.
 - Added ingestion improvements: source adapters, hazard dedupe, Postgres persistence, and run metrics.
 - Added GraphQL integration tests and smoke test script for core queries.
 - Expanded run/debug docs and demo guidance for local handoff.
+
+## 2026-04-26
+
+- Created outline, feature plan, UX flow
+- Research potential data extraction possibilities
+- basic UI setup
+- code architecture, developement tech stack

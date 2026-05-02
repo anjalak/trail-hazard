@@ -49,6 +49,11 @@ yarn-error.log*
 # Root-level Node leftovers (if you ever hoist tooling here)
 node_modules/
 
-# --- Project docs & outlines (keep local / private; not in repo) ---
+# --- Private / local notes (not published) ---
+README.private.md
+
+# --- Project documentation (keep local; not in repo) ---
 docs/
+
+# --- Personal outlines (keep local; not in repo) ---
 /outline*.md
