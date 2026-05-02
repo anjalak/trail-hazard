@@ -27,13 +27,48 @@ def _default_review_export_path() -> Path:
 
 # Keyword matching uses word-ish boundaries so substrings like "icy" inside "bicycles" do not trip hazards.
 HAZARD_PATTERN_TYPES: tuple[tuple[str, str], ...] = (
-    (r"\bsnow\b|\bsnowy\b", "snow"),
+    (r"\bavalanche\b|\bavi danger\b", "avalanche"),
+    (r"\blightning\b|\bthunderstorm\b|\bthunderstorms\b", "severe_weather"),
+    (r"\bdebris flow\b|\bdebris flows\b|\blandslide\b|\blandslides\b", "mass_movement"),
+    (r"\bbridge out\b|\bno bridge\b|\bbridge is out\b|\bbridge closed\b", "bridge"),
+    (
+        r"\bconstruction\b|\btrail closed\b|\btrail closure\b|\bclosed trail\b|\bclosure\b|\barea closed\b",
+        "closure",
+    ),
+    (r"\bsnow\b|\bsnowy\b|\bslush\b", "snow"),
     (r"\bmuddy\b|\bmud\b", "muddy_sections"),
+    (r"\bslippery\b", "wet"),
     (r"\bwashouts?\b", "washout"),
-    (r"\bbear\b", "wildlife"),
+    (r"\bflooding\b|\bflooded\b|\bflash flood\b", "flooding"),
+    (r"\brockfall\b|\brock fall\b|\brockslide\b", "rockfall"),
+    (
+        r"\bbear\b|\bmoose\b|\bcougar\b|\bcoyote\b|\bwolves?\b|\brattlesnake\b|\bsnake\b",
+        "wildlife",
+    ),
     (r"\btree\b|\btrees\b", "downed_tree"),
     (r"\bicy\b|\bicing\b|\bice\b", "ice"),
 )
+
+_HIGH_SEVERITY_TYPES = frozenset({"avalanche"})
+_MEDIUM_SEVERITY_TYPES = frozenset(
+    {
+        "snow",
+        "washout",
+        "flooding",
+        "rockfall",
+        "mass_movement",
+        "severe_weather",
+        "bridge",
+    }
+)
+
+
+def _severity_for_hazard_type(hazard_type: str) -> str:
+    if hazard_type in _HIGH_SEVERITY_TYPES:
+        return "high"
+    if hazard_type in _MEDIUM_SEVERITY_TYPES:
+        return "medium"
+    return "low"
 
 
 class SourceAdapter(Protocol):
@@ -248,7 +283,7 @@ def extract_hazards(normalized: Dict) -> List[Dict]:
             {
                 "trail_id": normalized["trail_id"],
                 "type": hazard_type,
-                "severity": "medium" if hazard_type in {"snow", "washout"} else "low",
+                "severity": _severity_for_hazard_type(hazard_type),
                 "source": normalized["source"],
                 "confidence": normalized["confidence"],
                 "reported_at": normalized["reported_at"],

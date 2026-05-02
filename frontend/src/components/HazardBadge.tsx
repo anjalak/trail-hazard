@@ -10,10 +10,20 @@ const severityStyles = {
 };
 
 const guidanceByType: Record<string, string> = {
+  avalanche: "Avoid avalanche terrain; check forecasts and carry proper gear.",
+  severe_weather: "Seek shelter from lightning; avoid exposed ridges and lone trees.",
+  mass_movement: "Avoid slopes with debris flows or fresh slide tracks; turn back if unstable.",
+  bridge: "Verify crossing safety; scout for detours if the structure is damaged or gone.",
+  closure: "Do not enter closed areas; use official notices for reopening.",
   snow: "Use traction and start early before slush develops.",
-  wildlife: "Keep distance, make noise, and carry bear spray where advised.",
+  wet: "Expect reduced grip; consider poles and tread with deeper lugs.",
+  muddy_sections: "Wear waterproof footwear and avoid trail widening.",
   washout: "Move slowly through unstable sections and use trekking poles.",
-  muddy_sections: "Wear waterproof footwear and avoid trail widening."
+  flooding: "Avoid crossing moving water; turn back if the route is submerged.",
+  rockfall: "Move quickly through exposure zones and watch for debris from above.",
+  wildlife: "Keep distance, make noise, and carry bear spray where advised.",
+  downed_tree: "Plan extra time to bypass or step over; watch for sharp branches.",
+  ice: "Use traction devices and avoid steep ice without protection."
 };
 
 export function HazardBadge({ type, severity }: Props) {

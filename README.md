@@ -36,6 +36,7 @@ docs/       Architecture, observability, and demo script
 ## Documentation Index
 
 - Hosting (Vercel + Render, Postgres, Redis): [`docs/hosting.md`](docs/hosting.md)
+- Refresh NPS data, ingestion, redeploy: [`docs/data-refresh-and-deploy.md`](docs/data-refresh-and-deploy.md)
 - Architecture: [`docs/architecture.md`](docs/architecture.md)
 - Running and debugging runbook: [`docs/running-and-debugging.md`](docs/running-and-debugging.md)
 - Observability notes: [`docs/observability.md`](docs/observability.md)

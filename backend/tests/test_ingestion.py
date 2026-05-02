@@ -26,6 +26,58 @@ def test_extract_hazards_maps_keywords() -> None:
     assert {"snow", "muddy_sections"} <= types
 
 
+def test_extract_hazards_slush_and_slippery() -> None:
+    repo = InMemoryRepository()
+    slush = normalize_payload(
+        store=repo,
+        raw={
+            "trail_id": 1,
+            "source": "scraped",
+            "text": "Heavy slush on the upper pitch",
+            "confidence": 0.8,
+        },
+    )
+    assert {h["type"] for h in extract_hazards(slush)} == {"snow"}
+    wet = normalize_payload(
+        store=repo,
+        raw={
+            "trail_id": 1,
+            "source": "scraped",
+            "text": "Logs are slippery after rain",
+            "confidence": 0.8,
+        },
+    )
+    assert {h["type"] for h in extract_hazards(wet)} == {"wet"}
+
+
+def test_extract_hazards_new_brainstorm_types_and_severity() -> None:
+    repo = InMemoryRepository()
+
+    def norm(text: str) -> dict:
+        return normalize_payload(
+            store=repo,
+            raw={"trail_id": 1, "source": "scraped", "text": text, "confidence": 0.8},
+        )
+
+    av = extract_hazards(norm("High avi danger on north aspects"))
+    assert len(av) == 1 and av[0]["type"] == "avalanche" and av[0]["severity"] == "high"
+
+    wx = extract_hazards(norm("Thunderstorm risk after noon"))
+    assert len(wx) == 1 and wx[0]["type"] == "severe_weather" and wx[0]["severity"] == "medium"
+
+    mm = extract_hazards(norm("Active landslide has buried the old tread"))
+    assert len(mm) == 1 and mm[0]["type"] == "mass_movement" and mm[0]["severity"] == "medium"
+
+    br = extract_hazards(norm("Main crossing bridge out — use ford upstream"))
+    assert len(br) == 1 and br[0]["type"] == "bridge" and br[0]["severity"] == "medium"
+
+    cl = extract_hazards(norm("Trail closed for construction through August"))
+    assert len(cl) == 1 and cl[0]["type"] == "closure" and cl[0]["severity"] == "low"
+
+    sn = extract_hazards(norm("Large rattlesnake sunning on the rocks"))
+    assert len(sn) == 1 and sn[0]["type"] == "wildlife" and sn[0]["severity"] == "low"
+
+
 def test_source_adapter_returns_seeded_payloads() -> None:
     seeded = [{"trail_id": 2, "source": "scraped", "text": "Washout reported", "confidence": 0.88}]
     adapter = StaticHazardSourceAdapter(seeded_payloads=seeded)
