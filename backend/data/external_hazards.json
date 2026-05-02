@@ -49,15 +49,6 @@
     "source": "scraped",
     "source_platform": "nps_alerts",
     "source_url": "https://developer.nps.gov/",
-    "text": "Hurricane Ridge Road Status. Hurricane Ridge Road is open. During the period of March 31 through April 30, Hurricane Ridge Road may open or close depending on road conditions, and weather. Check back here or call 360-565-3131 for updates.",
-    "reported_at": "2026-04-25 00:00:00.0",
-    "confidence": 0.86
-  },
-  {
-    "trail_id": 26,
-    "source": "scraped",
-    "source_platform": "nps_alerts",
-    "source_url": "https://developer.nps.gov/",
     "text": "Graves Creek Road Closed Until Repairs Complete. Graves Creek Road will reopen to vehicles after park road crews repair an eroded section at mile 4.1. Updates, including a construction timeline, will be posted as soon as they are known. To ensure equipment can move to and from the work site, vehicles may not park along the road during construction.",
     "reported_at": "2026-04-22 00:00:00.0",
     "confidence": 0.86

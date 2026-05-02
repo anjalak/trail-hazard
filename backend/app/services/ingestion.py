@@ -9,7 +9,21 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Protocol, Sequence
 
-from app.services.hazard_scoring import hazard_score
+from app.services.hazard_scoring import ensure_utc_datetime, hazard_score
+
+
+def _backend_root() -> Path:
+    """Directory that contains ``app/`` and ``data/`` (repo ``backend/``, image ``WORKDIR``)."""
+    return Path(__file__).resolve().parents[2]
+
+
+def _default_hazard_export_path() -> Path:
+    return _backend_root() / "data" / "external_hazards.json"
+
+
+def _default_review_export_path() -> Path:
+    return _backend_root() / "data" / "external_reviews.json"
+
 
 # Keyword matching uses word-ish boundaries so substrings like "icy" inside "bicycles" do not trip hazards.
 HAZARD_PATTERN_TYPES: tuple[tuple[str, str], ...] = (
@@ -73,7 +87,8 @@ class ExportedHazardSourceAdapter:
     name = "external_hazard_export"
 
     def __init__(self, path: str | None = None) -> None:
-        self.path = Path(path or os.getenv("HAZARD_EXPORT_PATH", "backend/data/external_hazards.json"))
+        explicit = path or os.getenv("HAZARD_EXPORT_PATH")
+        self.path = Path(explicit) if explicit else _default_hazard_export_path()
 
     def fetch(self) -> List[Dict]:
         if not self.path.exists():
@@ -101,7 +116,8 @@ class ExportedTripReportSourceAdapter:
     name = "external_trip_report_export"
 
     def __init__(self, path: str | None = None) -> None:
-        self.path = Path(path or os.getenv("REVIEW_EXPORT_PATH", "backend/data/external_reviews.json"))
+        explicit = path or os.getenv("REVIEW_EXPORT_PATH")
+        self.path = Path(explicit) if explicit else _default_review_export_path()
 
     def fetch(self) -> List[Dict]:
         if not self.path.exists():
@@ -180,6 +196,10 @@ def normalize_payload(store: HazardStore, raw: Dict) -> Dict:
     reported_at = raw.get("reported_at") or raw.get("published_at")
     if isinstance(reported_at, str):
         reported_at = datetime.fromisoformat(reported_at.replace("Z", "+00:00"))
+    if not isinstance(reported_at, datetime):
+        reported_at = datetime.now(tz=timezone.utc)
+    else:
+        reported_at = ensure_utc_datetime(reported_at)
     return {
         "trail_id": resolve_trail_id(store=store, raw=raw),
         "source": raw.get("source", "scraped"),
@@ -187,7 +207,7 @@ def normalize_payload(store: HazardStore, raw: Dict) -> Dict:
         "source_url": raw.get("source_url") or raw.get("url"),
         "adapter": raw.get("adapter"),
         "raw_text": raw.get("text", ""),
-        "reported_at": reported_at or datetime.now(tz=timezone.utc),
+        "reported_at": reported_at,
         "confidence": raw.get("confidence", 0.75),
     }
 
@@ -246,7 +266,12 @@ def score_hazards(hazards: List[Dict]) -> List[Dict]:
 
 
 def hazard_fingerprint(hazard: Dict) -> str:
-    reported_day = hazard["reported_at"].astimezone(timezone.utc).date().isoformat()
+    ra = hazard["reported_at"]
+    if isinstance(ra, datetime):
+        ra = ensure_utc_datetime(ra)
+        reported_day = ra.date().isoformat()
+    else:
+        reported_day = datetime.now(tz=timezone.utc).date().isoformat()
     normalized_text = " ".join(hazard.get("raw_text", "").strip().lower().split())
     materialized = f'{hazard["trail_id"]}|{hazard["type"]}|{reported_day}|{normalized_text}'
     return hashlib.sha256(materialized.encode("utf-8")).hexdigest()

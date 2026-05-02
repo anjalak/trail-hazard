@@ -5,6 +5,8 @@ All notable project updates are tracked here for handoff and portfolio context.
 ## 2026-05-01
 
 - Added production hosting runbook [`docs/hosting.md`](docs/hosting.md), Render Blueprint [`render.yaml`](render.yaml) (free-tier API only; Alembic at container startup), optional paid Celery [`render.workers.yaml`](render.workers.yaml), and [`frontend/vercel.json`](frontend/vercel.json). Production Docker image includes `backend/data` for ingestion paths.
+- Fixed default ingestion export paths so Docker resolves `data/external_hazards.json` under `/app` (was incorrectly `backend/data/…`). Added [`backend/scripts/run_ingestion_once.py`](backend/scripts/run_ingestion_once.py) for one-off ingestion without Celery.
+- Normalized naive `reported_at` datetimes to UTC in ingestion and [`hazard_score`](backend/app/services/hazard_scoring.py) so NPS-style exports without offsets do not crash ingestion.
 
 ## 2026-04-28
 

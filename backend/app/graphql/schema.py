@@ -14,6 +14,7 @@ from strawberry.types import Info
 
 from app.services.hazard_scoring import build_conditions
 from app.services.postgres_repository import PostgresRepository
+from app.services.trail_dedupe import dedupe_trails_preserve_order
 from app.services.report_rate_limit import check_report_mutation
 from app.services.repository import InMemoryRepository
 from app.services.robotics import build_robotics_area, build_robotics_traversability
@@ -397,6 +398,7 @@ class Query:
             park_type=park_type,
             park_name_contains=park_name_contains,
         )
+        rows = dedupe_trails_preserve_order(rows)
         return [map_trail(row) for row in rows]
 
     @strawberry.field

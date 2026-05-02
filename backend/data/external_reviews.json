@@ -57,17 +57,6 @@
   {
     "trail_id": 26,
     "source_platform": "nps_alerts",
-    "external_review_id": "A4FB72ED-081E-4851-BD4A-11E83603C083",
-    "source_url": "https://developer.nps.gov/",
-    "rating": null,
-    "text": "Hurricane Ridge Road Status. Hurricane Ridge Road is open. During the period of March 31 through April 30, Hurricane Ridge Road may open or close depending on road conditions, and weather. Check back here or call 360-565-3131 for updates.",
-    "sentiment_score": 0.0,
-    "scraped_at": "2026-04-25 00:00:00.0",
-    "author_handle": "nps_alert_feed"
-  },
-  {
-    "trail_id": 26,
-    "source_platform": "nps_alerts",
     "external_review_id": "BF786513-04CA-4234-8A9F-A3581363D747",
     "source_url": "https://developer.nps.gov/",
     "rating": null,

@@ -36,71 +36,98 @@ class PostgresRepository:
     ) -> List[Dict]:
         normalized_query = query.strip().lower()
         sql = """
+            WITH candidates AS (
+              SELECT
+                t.id,
+                t.name,
+                t.region,
+                t.difficulty,
+                t.length_km,
+                t.elevation_gain_m,
+                t.traversability_score,
+                (ST_AsGeoJSON(ST_SimplifyPreserveTopology(t.geom::geometry, 0.00004))::jsonb -> 'coordinates') AS route_coordinates,
+                COALESCE(
+                  ST_Y({pin}),
+                  (
+                    SELECT ST_Y(ST_Centroid(ST_Collect(h.location)))
+                    FROM hazards h
+                    WHERE h.trail_id = t.id
+                      AND h.location IS NOT NULL
+                  ),
+                  (
+                    SELECT ST_Y(ST_Centroid(ST_Collect(ur.location)))
+                    FROM user_reports ur
+                    WHERE ur.trail_id = t.id
+                      AND ur.location IS NOT NULL
+                  )
+                ) AS lat,
+                COALESCE(
+                  ST_X({pin}),
+                  (
+                    SELECT ST_X(ST_Centroid(ST_Collect(h.location)))
+                    FROM hazards h
+                    WHERE h.trail_id = t.id
+                      AND h.location IS NOT NULL
+                  ),
+                  (
+                    SELECT ST_X(ST_Centroid(ST_Collect(ur.location)))
+                    FROM user_reports ur
+                    WHERE ur.trail_id = t.id
+                      AND ur.location IS NOT NULL
+                  )
+                ) AS lng,
+                tl.state_code,
+                tl.city,
+                tl.park_name,
+                tl.park_type,
+                tl.county,
+                ROW_NUMBER() OVER (
+                  PARTITION BY
+                    COALESCE(LOWER(TRIM(tl.state_code)), ''),
+                    lower(regexp_replace(trim(both from t.region), E'\\s+', ' ', 'g')),
+                    lower(regexp_replace(trim(both from t.name), E'\\s+', ' ', 'g'))
+                  ORDER BY t.id
+                ) AS _dedupe_rn
+              FROM trails t
+              LEFT JOIN trail_locations tl ON tl.id = t.location_id
+              WHERE LOWER(t.name) LIKE %(query)s
+                AND (%(state_code)s::text IS NULL OR LOWER(tl.state_code) = LOWER(%(state_code)s::text))
+                AND (%(city)s::text IS NULL OR LOWER(tl.city) = LOWER(%(city)s::text))
+                AND (%(park_type)s::text IS NULL OR LOWER(tl.park_type) = LOWER(%(park_type)s::text))
+                AND (
+                  %(park_name_contains)s::text IS NULL
+                  OR LOWER(tl.park_name) LIKE %(park_name_like)s
+                )
+            )
             SELECT
-              t.id,
-              t.name,
-              t.region,
-              t.difficulty,
-              t.length_km,
-              t.elevation_gain_m,
-              t.traversability_score,
-              (ST_AsGeoJSON(ST_SimplifyPreserveTopology(t.geom::geometry, 0.00004))::jsonb -> 'coordinates') AS route_coordinates,
-              COALESCE(
-                ST_Y({pin}),
-                (
-                  SELECT ST_Y(ST_Centroid(ST_Collect(h.location)))
-                  FROM hazards h
-                  WHERE h.trail_id = t.id
-                    AND h.location IS NOT NULL
-                ),
-                (
-                  SELECT ST_Y(ST_Centroid(ST_Collect(ur.location)))
-                  FROM user_reports ur
-                  WHERE ur.trail_id = t.id
-                    AND ur.location IS NOT NULL
-                )
-              ) AS lat,
-              COALESCE(
-                ST_X({pin}),
-                (
-                  SELECT ST_X(ST_Centroid(ST_Collect(h.location)))
-                  FROM hazards h
-                  WHERE h.trail_id = t.id
-                    AND h.location IS NOT NULL
-                ),
-                (
-                  SELECT ST_X(ST_Centroid(ST_Collect(ur.location)))
-                  FROM user_reports ur
-                  WHERE ur.trail_id = t.id
-                    AND ur.location IS NOT NULL
-                )
-              ) AS lng,
-              tl.state_code,
-              tl.city,
-              tl.park_name,
-              tl.park_type,
-              tl.county
-            FROM trails t
-            LEFT JOIN trail_locations tl ON tl.id = t.location_id
-            WHERE LOWER(t.name) LIKE %(query)s
-              AND (%(state_code)s::text IS NULL OR LOWER(tl.state_code) = LOWER(%(state_code)s::text))
-              AND (%(city)s::text IS NULL OR LOWER(tl.city) = LOWER(%(city)s::text))
-              AND (%(park_type)s::text IS NULL OR LOWER(tl.park_type) = LOWER(%(park_type)s::text))
-              AND (
-                %(park_name_contains)s::text IS NULL
-                OR LOWER(tl.park_name) LIKE %(park_name_like)s
-              )
+              id,
+              name,
+              region,
+              difficulty,
+              length_km,
+              elevation_gain_m,
+              traversability_score,
+              route_coordinates,
+              lat,
+              lng,
+              state_code,
+              city,
+              park_name,
+              park_type,
+              county
+            FROM candidates
+            WHERE _dedupe_rn = 1
             ORDER BY
               CASE
-                WHEN LOWER(t.name) = %(normalized_query)s THEN 0
-                WHEN LOWER(t.name) LIKE %(prefix_query)s THEN 1
-                WHEN LOWER(t.name) LIKE %(word_prefix_query)s THEN 2
-                WHEN LOWER(t.name) LIKE %(query)s THEN 3
+                WHEN LOWER(name) = %(normalized_query)s THEN 0
+                WHEN LOWER(name) LIKE %(prefix_query)s THEN 1
+                WHEN LOWER(name) LIKE %(word_prefix_query)s THEN 2
+                WHEN LOWER(name) LIKE %(query)s THEN 3
                 ELSE 4
               END,
-              POSITION(%(normalized_query)s IN LOWER(t.name)),
-              LENGTH(t.name),
-              t.name
+              POSITION(%(normalized_query)s IN LOWER(name)),
+              LENGTH(name),
+              name
             LIMIT %(limit)s;
         """.replace("{pin}", TRAIL_MAP_PIN_POINT)
         params = {
@@ -197,37 +224,66 @@ class PostgresRepository:
 
         sql = f"""
             SELECT
-              t.id,
-              t.name,
-              t.region,
-              t.difficulty,
-              t.length_km,
-              t.elevation_gain_m,
-              t.traversability_score,
-              ST_Y({{pin}}) AS lat,
-              ST_X({{pin}}) AS lng,
-              tl.state_code,
-              tl.city,
-              tl.park_name,
-              tl.park_type,
-              tl.county
-            FROM trails t
-            LEFT JOIN trail_locations tl ON tl.id = t.location_id
-            WHERE t.geom IS NOT NULL
-              {quality_clause}
-              AND ST_DWithin(
-                  t.geom::geography,
-                  ST_SetSRID(ST_Point(%(lng)s, %(lat)s), 4326)::geography,
-                  %(radius_m)s
+              deduped.id,
+              deduped.name,
+              deduped.region,
+              deduped.difficulty,
+              deduped.length_km,
+              deduped.elevation_gain_m,
+              deduped.traversability_score,
+              deduped.lat,
+              deduped.lng,
+              deduped.state_code,
+              deduped.city,
+              deduped.park_name,
+              deduped.park_type,
+              deduped.county
+            FROM (
+              SELECT DISTINCT ON (
+                  COALESCE(LOWER(TRIM(tl.state_code)), ''),
+                  lower(regexp_replace(trim(both from t.region), E'\\s+', ' ', 'g')),
+                  lower(regexp_replace(trim(both from t.name), E'\\s+', ' ', 'g'))
                 )
-              AND (%(state_code)s::text IS NULL OR LOWER(tl.state_code) = LOWER(%(state_code)s::text))
-              AND (%(city)s::text IS NULL OR LOWER(tl.city) = LOWER(%(city)s::text))
-              AND (%(park_type)s::text IS NULL OR LOWER(tl.park_type) = LOWER(%(park_type)s::text))
-              AND (
-                %(park_name_contains)s::text IS NULL
-                OR LOWER(tl.park_name) LIKE %(park_name_like)s
-              )
-            ORDER BY t.name;
+                t.id,
+                t.name,
+                t.region,
+                t.difficulty,
+                t.length_km,
+                t.elevation_gain_m,
+                t.traversability_score,
+                ST_Y({{pin}}) AS lat,
+                ST_X({{pin}}) AS lng,
+                tl.state_code,
+                tl.city,
+                tl.park_name,
+                tl.park_type,
+                tl.county
+              FROM trails t
+              LEFT JOIN trail_locations tl ON tl.id = t.location_id
+              WHERE t.geom IS NOT NULL
+                {quality_clause}
+                AND ST_DWithin(
+                    t.geom::geography,
+                    ST_SetSRID(ST_Point(%(lng)s, %(lat)s), 4326)::geography,
+                    %(radius_m)s
+                  )
+                AND (%(state_code)s::text IS NULL OR LOWER(tl.state_code) = LOWER(%(state_code)s::text))
+                AND (%(city)s::text IS NULL OR LOWER(tl.city) = LOWER(%(city)s::text))
+                AND (%(park_type)s::text IS NULL OR LOWER(tl.park_type) = LOWER(%(park_type)s::text))
+                AND (
+                  %(park_name_contains)s::text IS NULL
+                  OR LOWER(tl.park_name) LIKE %(park_name_like)s
+                )
+              ORDER BY
+                COALESCE(LOWER(TRIM(tl.state_code)), ''),
+                lower(regexp_replace(trim(both from t.region), E'\\s+', ' ', 'g')),
+                lower(regexp_replace(trim(both from t.name), E'\\s+', ' ', 'g')),
+                ST_Distance(
+                  t.geom::geography,
+                  ST_SetSRID(ST_Point(%(lng)s, %(lat)s), 4326)::geography
+                ) ASC
+            ) deduped
+            ORDER BY deduped.name;
         """.replace("{pin}", TRAIL_MAP_PIN_POINT)
         params = {
             "lat": lat,

@@ -409,6 +409,66 @@ def test_nearby_trails_query_excludes_synthetic_geometry() -> None:
     assert [trail["id"] for trail in trails] == [202]
 
 
+def test_nearby_trails_collapses_same_name_same_park() -> None:
+    """NPS imports one row per segment; list APIs should show one row per trail name per park."""
+    park_loc = {
+        "state_code": "WA",
+        "city": "Marblemount",
+        "park_name": "North Cascades National Park",
+        "park_type": "national_park",
+        "county": "Whatcom",
+    }
+    repo = InMemoryRepository(use_fallback_snapshot=False)
+    repo.trails = [
+        {
+            "id": 61,
+            "name": "Sourdough Mountain Trail",
+            "region": "North Cascades",
+            "location": park_loc,
+            "difficulty": "moderate",
+            "length_km": 5.0,
+            "elevation_gain_m": 0,
+            "traversability_score": 0.7,
+            "lat": 48.80,
+            "lng": -121.50,
+            "geometry_quality": "imported_nps",
+        },
+        {
+            "id": 73,
+            "name": "Sourdough Mountain Trail",
+            "region": "North Cascades",
+            "location": park_loc,
+            "difficulty": "moderate",
+            "length_km": 2.0,
+            "elevation_gain_m": 0,
+            "traversability_score": 0.7,
+            "lat": 48.743,
+            "lng": -121.103,
+            "geometry_quality": "imported_nps",
+        },
+    ]
+    app_main.repo = repo
+    client = TestClient(app)
+
+    payload = _post_graphql(
+        client,
+        """
+        query Nearby($lat: Float!, $lng: Float!, $km: Float!) {
+          nearbyTrails(lat: $lat, lng: $lng, km: $km) {
+            id
+            name
+          }
+        }
+        """,
+        {"lat": 48.743, "lng": -121.103, "km": 50.0},
+    )
+
+    trails = payload["data"]["nearbyTrails"]
+    assert len(trails) == 1
+    assert trails[0]["id"] == 73
+    assert trails[0]["name"] == "Sourdough Mountain Trail"
+
+
 def test_trail_conditions_response_shape() -> None:
     app_main.repo = InMemoryRepository()
     client = TestClient(app)

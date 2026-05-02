@@ -35,7 +35,22 @@ def _alembic_sqlalchemy_url(raw: str) -> str:
     if url.startswith("postgres://"):
         url = "postgresql://" + url.removeprefix("postgres://")
     if url.startswith("postgresql://"):
-        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+        host = (urlparse(url).hostname or "").lower()
+        # Render egress is IPv4-only; Supabase direct host resolves to IPv6 → "Network is unreachable".
+        if (
+            os.getenv("RENDER") == "true"
+            and host.startswith("db.")
+            and host.endswith(".supabase.co")
+        ):
+            raise ValueError(
+                "DATABASE_URL uses Supabase direct host db.*.supabase.co, which often resolves "
+                'to IPv6. Render cannot reach it. Replace with the pooler URI (host ends with '
+                '".pooler.supabase.com", from Supabase Dashboard → Connect → Session pooler or '
+                "Transaction pooler). "
+                "https://supabase.com/docs/guides/troubleshooting/supabase--your-network-ipv4-and-ipv6-compatibility"
+            )
+        return url
     raise ValueError(
         "DATABASE_URL must start with postgresql:// or postgres://. "
         f"Scheme was {base_scheme!r} (first chars: {url[:24]!r}…)."

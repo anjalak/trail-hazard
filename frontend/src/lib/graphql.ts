@@ -7,13 +7,37 @@ type TrailFilters = {
   parkNameContains?: string;
 };
 
+/** One UI row per trail name per region+state (NPS segments share trails.region; avoid park_name vs region mismatches). */
+function dedupeTrailsForUi(trails: Trail[]): Trail[] {
+  const seen = new Set<string>();
+  const out: Trail[] = [];
+  for (const t of trails) {
+    const state = (t.location?.state_code ?? "").trim().toLowerCase();
+    const region = t.region.trim().toLowerCase().replace(/\s+/g, " ");
+    const name = t.name.trim().toLowerCase().replace(/\s+/g, " ");
+    const key = `${state}\0${region}\0${name}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(t);
+  }
+  return out;
+}
+
 const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_URL ?? "http://localhost:8000/graphql";
 
 function _fetchHint(): string {
-  if (typeof window !== "undefined" && window.location.origin.startsWith("https://")) {
-    return ` From a browser this often means CORS: set FastAPI env CORS_ALLOW_ORIGINS=${window.location.origin}, (comma-separated for multiple previews).`;
+  const parts: string[] = [];
+  if (!endpoint.includes("/graphql")) {
+    parts.push(
+      `NEXT_PUBLIC_GRAPHQL_URL should end with /graphql (e.g. https://trailintel-api.onrender.com/graphql).`
+    );
   }
-  return "";
+  if (typeof window !== "undefined" && window.location.origin.startsWith("https://")) {
+    parts.push(
+      `From a browser, "Failed to fetch" often means CORS: on Render set CORS_ALLOW_ORIGINS to include ${window.location.origin} (comma-separated for multiple Vercel preview URLs).`
+    );
+  }
+  return parts.length ? ` ${parts.join(" ")}` : "";
 }
 
 async function executeGraphQL<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
@@ -109,7 +133,7 @@ export async function searchTrailsByName(query: string, filters?: TrailFilters):
       parkNameContains: filters?.parkNameContains
     }
   );
-  return data.searchTrailsByName.map((trail) => ({
+  const mapped = data.searchTrailsByName.map((trail) => ({
     id: trail.id,
     name: trail.name,
     region: trail.region,
@@ -129,6 +153,7 @@ export async function searchTrailsByName(query: string, filters?: TrailFilters):
     elevation_gain_m: trail.elevationGainM,
     traversability_score: trail.traversabilityScore
   }));
+  return dedupeTrailsForUi(mapped);
 }
 
 export async function getTrailConditions(trailId: number): Promise<TrailConditions | null> {
@@ -344,7 +369,7 @@ export async function getNearbyTrails(lat: number, lng: number, km: number, filt
       parkNameContains: filters?.parkNameContains
     }
   );
-  return data.nearbyTrails.map((trail) => ({
+  const mapped = data.nearbyTrails.map((trail) => ({
     id: trail.id,
     name: trail.name,
     region: trail.region,
@@ -364,6 +389,7 @@ export async function getNearbyTrails(lat: number, lng: number, km: number, filt
     elevation_gain_m: trail.elevationGainM,
     traversability_score: trail.traversabilityScore
   }));
+  return dedupeTrailsForUi(mapped);
 }
 
 export type GeoJsonFeatureCollection = {

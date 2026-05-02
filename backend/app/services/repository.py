@@ -4,6 +4,7 @@ from datetime import date, datetime, timezone
 from typing import Any, Dict, List, Optional, Sequence
 
 from app.services.in_memory_fallback import try_load_fallback_state
+from app.services.trail_dedupe import dedupe_trails_for_list_api
 
 
 def _empty_in_memory_fallback() -> Dict[str, Any]:
@@ -96,8 +97,9 @@ class InMemoryRepository:
                 park_name_contains=park_name_contains,
             )
         ]
+        deduped = dedupe_trails_for_list_api(matches)
         ranked = sorted(
-            matches,
+            deduped,
             key=lambda trail: self._search_rank(trail["name"], q),
         )
         return ranked[:limit]
@@ -146,7 +148,8 @@ class InMemoryRepository:
                 )
             ):
                 hits.append(trail)
-        return hits
+        collapsed = dedupe_trails_for_list_api(hits, pivot_lat=lat, pivot_lng=lng)
+        return sorted(collapsed, key=lambda t: (t["name"].lower(), t["id"]))
 
     def get_hazards(self, trail_id: int, active_only: bool = True) -> List[Dict]:
         rows = [h for h in self.hazards if h["trail_id"] == trail_id]
