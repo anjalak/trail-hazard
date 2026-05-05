@@ -16,6 +16,8 @@
 
 html {
   min-height: 100%;
+  /* Keeps main column width stable when the vertical scrollbar appears or disappears between routes. */
+  scrollbar-gutter: stable;
   -webkit-tap-highlight-color: rgba(15, 23, 42, 0.08);
   background-color: var(--app-bg);
 }

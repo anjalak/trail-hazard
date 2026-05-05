@@ -45,18 +45,25 @@ export default async function TrailPage({ params }: TrailPageProps) {
 
   return (
     <div className="space-y-5">
-      <AppLinkButton href="/" variant="text" className="justify-start px-0 py-0">
-        Back to search
-      </AppLinkButton>
-
-      <SectionCard labelledBy="trail-summary-heading" className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.22em] text-signal">Trail Brief</p>
-        <h1 id="trail-summary-heading" className="text-4xl font-extrabold text-appText sm:text-5xl">
-          {conditions.name}
-        </h1>
-        <p className="text-sm font-medium text-[#3c4a4b]">
-          {locationParts.length ? locationParts.join(" - ") : `${conditions.region} region`}
-        </p>
+      <SectionCard labelledBy="trail-summary-heading" className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="min-w-0 space-y-3">
+            <p className="text-xs uppercase tracking-[0.22em] text-signal">Trail Brief</p>
+            <h1 id="trail-summary-heading" className="text-4xl font-extrabold text-appText sm:text-5xl">
+              {conditions.name}
+            </h1>
+            <p className="text-sm font-medium text-[#3c4a4b]">
+              {locationParts.length ? locationParts.join(" - ") : `${conditions.region} region`}
+            </p>
+          </div>
+          <AppLinkButton
+            href="/"
+            variant="text"
+            className="shrink-0 justify-start px-0 py-0 text-appText hover:text-[#1f3033] sm:min-h-[44px]"
+          >
+            Back to search
+          </AppLinkButton>
+        </div>
         <dl className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-lg border border-borderSubtle bg-surfaceMuted p-3">
             <dt className="text-xs uppercase tracking-[0.14em] text-[#5c6766]">Overall risk score</dt>

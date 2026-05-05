@@ -6,7 +6,7 @@ import { SectionCard } from "@/components/SectionCard";
 
 export default function HomePage() {
   return (
-    <div className="space-y-5 sm:space-y-6">
+    <div className="space-y-5">
       <SectionCard className="space-y-4 overflow-hidden">
         <header className="space-y-3">
           <p className="text-xs uppercase tracking-[0.22em] text-[#54605f]">Curated Trail Intelligence</p>
