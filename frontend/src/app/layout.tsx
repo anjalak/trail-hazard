@@ -3,7 +3,7 @@ import { type CSSProperties, type ReactNode } from "react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SkipLink } from "@/components/SkipLink";
-import contourBackground from "../../topography-contour-map-design/12315.jpg";
+import contourBackground from "../../topography-contour-map-design/topo-contour-bg.webp";
 
 export const metadata = {
   title: "TrailIntel",
@@ -22,6 +22,9 @@ const topoBackdropStyle: CSSProperties = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preload" as="image" href={contourBackground.src} type="image/webp" />
+      </head>
       <body className="relative font-body text-appText">
         {/* Fixed full-viewport layer (not background-attachment:fixed) — smoother scrolling on long pages */}
         <div aria-hidden className="pointer-events-none fixed inset-0 -z-10" style={topoBackdropStyle} />
